@@ -179,20 +179,31 @@ export default function Header({ onSearch }: HeaderProps) {
                   )}
                 </div>
               ) : (
-                <div className="hidden sm:flex items-center gap-2">
+                <>
+                  {/* Botón compacto de login para móvil */}
                   <Link
                     href="/auth"
-                    className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    className="sm:hidden flex items-center justify-center w-11 h-11 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    aria-label="Iniciar sesión"
                   >
-                    Iniciar sesión
+                    <UserIcon />
                   </Link>
-                  <Link
-                    href="/auth?mode=register"
-                    className="px-4 py-2 text-sm font-medium bg-[#1c6554] hover:bg-[#1c6554]/90 text-white rounded-lg transition-colors"
-                  >
-                    Registrarse
-                  </Link>
-                </div>
+                  {/* Botones completos para pantallas sm+ */}
+                  <div className="hidden sm:flex items-center gap-2">
+                    <Link
+                      href="/auth"
+                      className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    >
+                      Iniciar sesión
+                    </Link>
+                    <Link
+                      href="/auth?mode=register"
+                      className="px-4 py-2 text-sm font-medium bg-[#1c6554] hover:bg-[#1c6554]/90 text-white rounded-lg transition-colors"
+                    >
+                      Registrarse
+                    </Link>
+                  </div>
+                </>
               )}
 
               {/* Carrito */}

@@ -162,6 +162,44 @@ New-Era-main/
 
 ## 🔑 Cambios Principales Implementados
 
+### 0. 🐛 Corrección Responsive Móviles (Versión 2.0.1)
+**Fecha:** Junio 2026  
+**Problema:** Login y Register no funcionaban en móviles (elementos cortados)
+
+**Solución aplicada:**
+- ✅ Logo oculto en móvil para evitar bloqueo
+- ✅ Botón "Volver" más compacto: "Inicio"
+- ✅ Bloque verde diagonal oculto en móvil
+- ✅ Formularios con `flex` y centrado vertical
+- ✅ Cards centradas con `max-w-md`
+- ✅ Background opaco en móvil (`bg-white/95`)
+- ✅ Contenedor con scroll vertical completo
+- ✅ Padding superior: `py-20` para espacio del botón
+- ✅ Todos los elementos ahora visibles y clickeables
+
+**Archivo modificado:**
+- `components/auth/AnimatedAuth.tsx`
+
+**CSS Classes Clave:**
+```tsx
+// Contenedor principal
+className="min-h-screen overflow-y-auto"
+
+// Formularios
+className="flex items-center justify-center py-20"
+
+// Cards
+className="max-w-md bg-white/95 lg:bg-white/80"
+
+// Logo (solo desktop)
+className="hidden lg:block"
+
+// Bloque verde (solo desktop)
+className="hidden lg:block"
+```
+
+---
+
 ### 1. 🌓 Sistema de Modo Claro/Oscuro
 **Ubicación:** Todo el frontend
 
@@ -448,6 +486,13 @@ changePassword(data)             // PUT /api/auth/change-password
 
 ## ✅ Checklist de Implementación
 
+### Correcciones
+- [x] Responsive móvil en login/register
+- [x] Botones visibles en todas las pantallas
+- [x] Scroll vertical funcional
+- [x] Cards centradas correctamente
+- [x] Elementos no se sobreponen
+
 ### Backend
 - [x] Esquema de base de datos (Prisma)
 - [x] Autenticación JWT
@@ -479,6 +524,7 @@ changePassword(data)             // PUT /api/auth/change-password
 - [x] Validación de contraseñas
 - [x] Feedback visual
 - [x] Modo oscuro
+- [x] **Responsive móviles (v2.0.1)**
 
 ### Frontend - Cliente
 - [x] Menú de usuario en Header

@@ -238,7 +238,7 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
       )}
 
       {/* Article principal */}
-      <article className="bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen relative overflow-x-hidden overflow-y-auto">
+      <article className="bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen relative overflow-x-hidden lg:overflow-hidden">
         {/* Bloque rotado con gradiente corporativo - Oculto en móvil para no interferir */}
         <div
           className={`hidden lg:block absolute -bottom-20 z-0 bg-gradient-to-br from-[#0C447C] via-[#1c6554] to-[#0a5a47] dark:from-blue-700 dark:via-green-700 dark:to-teal-800 w-[200%] h-[200%] transition-all duration-1000 ease-in-out shadow-2xl ${
@@ -256,7 +256,7 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
         {/* LOGIN FORM */}
         <form
           onSubmit={handleLoginSubmit}
-          className={`flex items-center justify-center relative z-10 row-start-1 col-start-1 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 min-h-screen lg:min-h-0 overflow-y-auto ${
+          className={`items-center justify-center relative z-10 row-start-1 col-start-1 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 min-h-screen lg:min-h-0 overflow-y-auto ${
             isInitialMount ? 'opacity-0' : ''
           } ${loginFormClass} ${
             isSignUp ? 'hidden lg:grid' : 'flex'
@@ -345,7 +345,7 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
         {/* REGISTER FORM */}
         <form
           onSubmit={handleRegisterSubmit}
-          className={`flex items-start justify-center relative z-10 row-start-1 col-start-2 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 overflow-y-auto min-h-screen lg:max-h-screen custom-scrollbar ${
+          className={`items-start justify-center relative z-10 row-start-1 col-start-1 lg:col-start-2 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 overflow-y-auto min-h-screen lg:max-h-screen custom-scrollbar ${
             isInitialMount ? 'opacity-0' : ''
           } ${registerFormClass} ${
             isSignUp ? 'flex' : 'hidden lg:flex'

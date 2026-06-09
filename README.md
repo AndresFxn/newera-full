@@ -3,7 +3,7 @@
 <div align="center">
 
 ![New Era Supermercado](https://img.shields.io/badge/New%20Era-Supermercado-1c6554?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-2.0-0C447C?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.0.1-0C447C?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-success?style=for-the-badge)
 
 **Plataforma moderna de comercio electrónico para supermercado con entregas rápidas**
@@ -80,6 +80,8 @@ Proporcionar una experiencia de compra en línea fluida y moderna, con entregas 
 - ✅ **Manejo de Errores** - Feedback claro al usuario
 - ✅ **Optimización de Performance** - Carga rápida y eficiente
 - ✅ **Accesibilidad** - WCAG AA compliant
+- ✅ **Responsive Design** - Optimizado para móvil, tablet y desktop
+- ✅ **PWA Ready** - Instalable como app nativa
 
 ---
 
@@ -443,7 +445,27 @@ Este proyecto es propietario y pertenece a **New Era Supermercado**.
 
 ---
 
-## 🗺️ Roadmap
+## � Notas de Versión
+
+### Versión 2.0.1 (Junio 2026) - Hotfix
+- 🐛 Corregido responsive en login/register para móviles
+- ✅ Logo oculto en móvil para evitar bloqueo
+- ✅ Botón "Volver" optimizado para pantallas pequeñas
+- ✅ Formularios con scroll vertical completo
+- ✅ Bloque diagonal verde oculto en móvil
+- ✅ Cards centradas con ancho máximo apropiado
+- ✅ Mejoras en legibilidad con backgrounds más opacos
+
+### Versión 2.0 (Junio 2026) - Major Release
+- ✨ Sistema completo de modo claro/oscuro
+- ✨ Rediseño visual de login y register
+- ✨ Funcionalidades completas para clientes
+- ✨ Validación robusta de contraseñas
+- ✨ Documentación completa del proyecto
+
+---
+
+## �🗺️ Roadmap
 
 ### Versión 2.1 (Q3 2026)
 - [ ] Notificaciones push en tiempo real

@@ -68,7 +68,7 @@
 - ✅ **AnimatedAuth** (`components/auth/AnimatedAuth.tsx`)
   - Diseño con efecto glassmorphism (vidrio esmerilado)
   - Fondo con gradiente de 3 colores corporativos
-  - Bloque diagonal verde/azul animado que rota entre modos
+  - Bloque diagonal verde/azul animado que rota entre modos (solo desktop)
   - Elementos decorativos (círculos difuminados)
   - Inputs con bordes redondeados (`rounded-xl`)
   - Botones con gradientes y efecto de brillo animado
@@ -76,6 +76,16 @@
   - Sombras profundas para efecto de profundidad
   - Transiciones suaves de 1 segundo entre login/registro
   - Modo oscuro completo integrado
+  - **✨ Responsive completo para móviles** (nuevo)
+    - Logo oculto en móvil (solo desktop)
+    - Botón "Inicio" optimizado (más pequeño y compacto)
+    - Formularios con scroll vertical completo
+    - Cards centradas con ancho máximo `max-w-md`
+    - Background más opaco en móvil (`bg-white/95`)
+    - Padding ajustado: `py-20` para espacio superior
+    - Bloque verde diagonal oculto en móvil (evita sobreposición)
+    - Contenedor con `min-h-screen` y scroll habilitado
+    - Todos los botones y enlaces visibles sin cortes
 
 - ✅ **AuthField** (`components/auth/AuthField.tsx`)
   - Etiquetas flotantes mejoradas
@@ -211,6 +221,13 @@ Los siguientes endpoints ya existían y fueron utilizados:
 - ✅ Menú hamburguesa en móvil
 - ✅ Modals fullscreen en pantallas pequeñas
 - ✅ Touch-friendly buttons (mínimo 44x44px)
+- ✅ **Login/Register optimizado para móviles:**
+  - Formularios con scroll vertical completo
+  - Elementos no se cortan en pantallas pequeñas
+  - Cards centradas con ancho máximo apropiado
+  - Background sólido para mejor legibilidad
+  - Botones de navegación compactos
+  - Logo oculto para no bloquear contenido
 
 ### Animaciones
 - ✅ Transiciones suaves (duration-200 a duration-1000)
@@ -261,6 +278,30 @@ PORT=3001
 - jsonwebtoken
 - multer
 - express-validator
+
+---
+
+## 🐛 CORRECCIONES Y MEJORAS
+
+### Versión 2.0.1 - Hotfix Responsive Móviles
+**Fecha:** Junio 2026
+
+**Problema resuelto:** Login y Register no permitían iniciar sesión en móviles
+
+**Cambios aplicados:**
+- ✅ Logo oculto en móvil (`hidden lg:block`) para no bloquear contenido
+- ✅ Botón "Volver" mejorado: más compacto (`px-3 py-2`) y texto corto ("Inicio")
+- ✅ Bloque diagonal verde oculto en móvil (`hidden lg:block`)
+- ✅ Contenedor principal con `min-h-screen` y `overflow-y-auto`
+- ✅ Formularios usan `flex items-center justify-center` en lugar de `grid`
+- ✅ Cards con `max-w-md` y centradas con `mx-auto` en móvil
+- ✅ Background más opaco en móvil: `bg-white/95` (mejor contraste)
+- ✅ Padding superior aumentado: `py-20` (espacio para botón "Inicio")
+- ✅ Formulario de registro con scroll vertical completo
+- ✅ Todos los botones y enlaces ahora son visibles y clickeables
+
+**Archivos modificados:**
+- `frontend/frontend/components/auth/AnimatedAuth.tsx`
 
 ---
 
