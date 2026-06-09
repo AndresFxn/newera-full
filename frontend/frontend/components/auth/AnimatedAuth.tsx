@@ -189,8 +189,8 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
 
   return (
     <>
-      {/* Logo - posición dinámica según modo */}
-      <div className={`fixed z-[9999] transition-all duration-1000 ease-in-out hover:scale-110 pointer-events-auto ${
+      {/* Logo - oculto en móvil, visible en desktop */}
+      <div className={`hidden lg:block fixed z-[9999] transition-all duration-1000 ease-in-out hover:scale-110 pointer-events-auto ${
         isSignUp ? 'top-4 right-4' : 'bottom-4 left-4'
       }`} style={{
         filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
@@ -198,15 +198,15 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
         <Logo size="xl" />
       </div>
 
-      {/* Botón volver al inicio */}
+      {/* Botón volver al inicio - mejorado para móvil */}
       <Link
         href="/"
-        className="fixed top-4 left-4 z-[9999] flex items-center gap-2 px-5 py-2.5 bg-white/95 hover:bg-white dark:bg-slate-900/95 dark:hover:bg-slate-900 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white transition-all hover:shadow-lg hover:scale-105 group pointer-events-auto"
+        className="fixed top-4 left-4 z-[9999] flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-white/95 hover:bg-white dark:bg-slate-900/95 dark:hover:bg-slate-900 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-lg sm:rounded-xl text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white transition-all hover:shadow-lg hover:scale-105 group pointer-events-auto"
       >
-        <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        <span className="text-sm font-semibold">Volver al inicio</span>
+        <span className="text-xs sm:text-sm font-semibold">Inicio</span>
       </Link>
 
       {/* Alerta de error global */}
@@ -238,10 +238,10 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
       )}
 
       {/* Article principal */}
-      <article className="bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 grid grid-cols-1 lg:grid-cols-2 w-full h-screen relative overflow-hidden">
-        {/* Bloque rotado con gradiente corporativo mejorado - Más alto para cubrir todo */}
+      <article className="bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen relative overflow-x-hidden overflow-y-auto">
+        {/* Bloque rotado con gradiente corporativo - Oculto en móvil para no interferir */}
         <div
-          className={`absolute -bottom-20 z-0 bg-gradient-to-br from-[#0C447C] via-[#1c6554] to-[#0a5a47] dark:from-blue-700 dark:via-green-700 dark:to-teal-800 w-[200%] h-[200%] transition-all duration-1000 ease-in-out shadow-2xl ${
+          className={`hidden lg:block absolute -bottom-20 z-0 bg-gradient-to-br from-[#0C447C] via-[#1c6554] to-[#0a5a47] dark:from-blue-700 dark:via-green-700 dark:to-teal-800 w-[200%] h-[200%] transition-all duration-1000 ease-in-out shadow-2xl ${
             isSignUp ? 'rotate-[-57deg] left-[-115%]' : 'rotate-[57deg] left-[15%]'
           }`}
           aria-hidden="true"
@@ -256,15 +256,15 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
         {/* LOGIN FORM */}
         <form
           onSubmit={handleLoginSubmit}
-          className={`grid gap-6 content-center relative z-10 row-start-1 col-start-1 px-8 sm:px-12 lg:px-20 xl:px-24 py-10 ${
+          className={`flex items-center justify-center relative z-10 row-start-1 col-start-1 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 min-h-screen lg:min-h-0 overflow-y-auto ${
             isInitialMount ? 'opacity-0' : ''
           } ${loginFormClass} ${
-            isSignUp ? 'hidden lg:grid' : 'grid'
+            isSignUp ? 'hidden lg:grid' : 'flex'
           }`}
           style={isInitialMount ? { animation: 'fadeIn 0.6s ease-out 0.2s forwards' } : undefined}
         >
           {/* Card contenedor con efecto de vidrio */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-slate-700/50">
+          <div className="bg-white/95 dark:bg-slate-900/95 lg:bg-white/80 lg:dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/20 dark:border-slate-700/50 w-full max-w-md">
             <AuthFormHeader title="Iniciar sesión" />
 
             <div className="space-y-5">
@@ -345,15 +345,15 @@ export default function AnimatedAuth({ initialMode = 'login' }: AnimatedAuthProp
         {/* REGISTER FORM */}
         <form
           onSubmit={handleRegisterSubmit}
-          className={`grid gap-4 content-start relative z-10 row-start-1 col-start-2 px-8 sm:px-12 lg:px-20 xl:px-24 py-10 overflow-y-auto max-h-screen custom-scrollbar ${
+          className={`flex items-start justify-center relative z-10 row-start-1 col-start-2 px-4 sm:px-8 lg:px-20 xl:px-24 py-20 sm:py-10 overflow-y-auto min-h-screen lg:max-h-screen custom-scrollbar ${
             isInitialMount ? 'opacity-0' : ''
           } ${registerFormClass} ${
-            isSignUp ? 'grid' : 'hidden lg:grid'
+            isSignUp ? 'flex' : 'hidden lg:flex'
           }`}
           style={isInitialMount ? { animation: 'fadeIn 0.6s ease-out 0.2s forwards' } : undefined}
         >
           {/* Card contenedor con efecto de vidrio */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-slate-700/50">
+          <div className="bg-white/95 dark:bg-slate-900/95 lg:bg-white/80 lg:dark:bg-slate-900/80 backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/20 dark:border-slate-700/50 w-full max-w-md my-auto">
             <AuthFormHeader title="Crear cuenta" />
 
             <div className="space-y-4">

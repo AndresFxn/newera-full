@@ -1,274 +1,474 @@
-# 🛒 New Era Supermercado - Sistema de E-commerce
+# 🛒 New Era Supermercado - Plataforma E-Commerce
 
-Sistema completo de comercio electrónico para supermercado con gestión de inventario, pedidos y entregas en tiempo real.
+<div align="center">
 
-## 📋 Características Principales
+![New Era Supermercado](https://img.shields.io/badge/New%20Era-Supermercado-1c6554?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.0-0C447C?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-Active-success?style=for-the-badge)
 
-### 👥 Para Clientes
-- ✅ Registro e inicio de sesión seguro
-- 🛍️ Catálogo de productos con búsqueda y filtros
-- 🛒 Carrito de compras persistente
-- 📍 Gestión de direcciones de entrega
-- 📦 Seguimiento de pedidos en tiempo real
-- 💳 Sistema de pago integrado
+**Plataforma moderna de comercio electrónico para supermercado con entregas rápidas**
+
+[Características](#-características) • [Instalación](#-instalación) • [Uso](#-uso) • [Documentación](#-documentación)
+
+</div>
+
+---
+
+## 📋 Tabla de Contenidos
+
+- [Descripción](#-descripción)
+- [Características](#-características)
+- [Tecnologías](#-tecnologías)
+- [Requisitos](#-requisitos)
+- [Instalación](#-instalación)
+- [Configuración](#-configuración)
+- [Uso](#-uso)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [API Endpoints](#-api-endpoints)
+- [Roles y Permisos](#-roles-y-permisos)
+- [Capturas de Pantalla](#-capturas-de-pantalla)
+- [Documentación](#-documentación)
+- [Contribuir](#-contribuir)
+- [Licencia](#-licencia)
+
+---
+
+## 📖 Descripción
+
+**New Era Supermercado** es una plataforma completa de comercio electrónico diseñada específicamente para supermercados que ofrecen entregas a domicilio. El sistema incluye gestión de inventario, procesamiento de pedidos, seguimiento de entregas y múltiples roles de usuario.
+
+### 🎯 Objetivo
+Proporcionar una experiencia de compra en línea fluida y moderna, con entregas rápidas (menos de 30 minutos) y gestión eficiente para el personal del supermercado.
+
+---
+
+## ✨ Características
+
+### 🛍️ Para Clientes
+- ✅ **Catálogo de Productos** - Navegación intuitiva con categorías y filtros
+- ✅ **Carrito de Compras** - Gestión en tiempo real con localStorage
+- ✅ **Gestión de Direcciones** - CRUD completo de direcciones de entrega
+- ✅ **Historial de Pedidos** - Seguimiento completo de todos los pedidos
+- ✅ **Perfil de Usuario** - Editar información personal y cambiar contraseña
+- ✅ **Promociones y Ofertas** - Sistema de descuentos y promociones
+- ✅ **Búsqueda Avanzada** - Filtros por categoría, precio y disponibilidad
+- ✅ **Responsive Design** - Optimizado para móvil, tablet y desktop
 
 ### 👨‍💼 Para Administradores
-- 📊 Dashboard con estadísticas y métricas
-- 📦 Gestión completa de productos (CRUD)
-- 🗂️ Gestión de categorías
-- 📝 Administración de órdenes
-- 👥 Gestión de usuarios
-- 📸 Sistema de carga de imágenes
+- ✅ **Dashboard Completo** - Estadísticas y métricas en tiempo real
+- ✅ **Gestión de Productos** - CRUD completo con imágenes
+- ✅ **Gestión de Categorías** - Organización del catálogo
+- ✅ **Gestión de Pedidos** - Actualización de estados y seguimiento
+- ✅ **Gestión de Usuarios** - Control de roles y permisos
+- ✅ **Gestión de Promociones** - Crear y administrar ofertas
+- ✅ **Reportes** - Análisis de ventas y performance
+
+### 💰 Para Cajeros
+- ✅ **Dashboard de Caja** - Vista simplificada de pedidos
+- ✅ **Gestión de Pedidos** - Confirmar y procesar pagos
+- ✅ **Consulta de Productos** - Verificar disponibilidad y precios
 
 ### 🚚 Para Repartidores
-- 📋 Lista de pedidos asignados
-- 🗺️ Información de entrega
-- ✅ Actualización de estado de entregas
+- ✅ **Dashboard de Entregas** - Pedidos asignados en tiempo real
+- ✅ **Historial de Entregas** - Registro completo de entregas realizadas
+- ✅ **Estado de Pedidos** - Actualización de estado de entrega
 
-## 🏗️ Arquitectura del Sistema
+### 🌓 Características Generales
+- ✅ **Modo Claro/Oscuro** - Switch completo en toda la aplicación
+- ✅ **Autenticación JWT** - Sistema seguro de login y registro
+- ✅ **Validaciones** - Frontend y backend completas
+- ✅ **Manejo de Errores** - Feedback claro al usuario
+- ✅ **Optimización de Performance** - Carga rápida y eficiente
+- ✅ **Accesibilidad** - WCAG AA compliant
 
-```
-New-Era/
-├── backend/           # API REST con Node.js + Express
-│   ├── prisma/       # ORM y modelos de base de datos
-│   ├── src/
-│   │   ├── config/   # Configuraciones (DB, upload)
-│   │   ├── controllers/  # Lógica de negocio
-│   │   ├── middlewares/  # Auth, validación, errores
-│   │   ├── routes/   # Endpoints de la API
-│   │   ├── services/ # Servicios de negocio
-│   │   └── validators/  # Validación de datos con Joi
-│   └── uploads/      # Almacenamiento de imágenes
-│
-└── frontend/         # Aplicación web con Next.js 16
-    ├── app/          # App Router de Next.js
-    │   ├── (shop)/   # Tienda pública
-    │   ├── admin/    # Panel administrativo
-    │   └── auth/     # Autenticación
-    ├── components/   # Componentes React reutilizables
-    └── lib/          # Utilidades y API client
-```
+---
 
-## 🚀 Inicio Rápido
-
-### Prerrequisitos
-
-- **Node.js** 18+ 
-- **PostgreSQL** 14+
-- **npm** o **yarn**
-
-### 1. Configuración de la Base de Datos
-
-```bash
-# Crear base de datos en PostgreSQL
-createdb newera_db
-
-# O desde psql:
-# CREATE DATABASE newera_db;
-```
-
-### 2. Configuración del Backend
-
-```bash
-# Navegar al directorio del backend
-cd backend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-# Edita el archivo .env con tus credenciales
-```
-
-**Archivo `backend/.env`:**
-```env
-PORT=4000
-NODE_ENV=development
-DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/newera_db"
-JWT_SECRET="tu_secret_aleatorio_seguro"
-JWT_EXPIRES_IN="8h"
-FRONTEND_URL="http://localhost:3000"
-```
-
-```bash
-# Ejecutar migraciones de Prisma
-npx prisma migrate dev
-
-# Poblar base de datos con datos iniciales
-npm run seed
-
-# Iniciar servidor backend
-npm start
-```
-
-El backend estará corriendo en: **http://localhost:4000**
-
-### 3. Configuración del Frontend
-
-```bash
-# Navegar al directorio del frontend
-cd frontend/frontend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-# Edita el archivo .env.local
-```
-
-**Archivo `frontend/frontend/.env.local`:**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000/api
-```
-
-```bash
-# Iniciar servidor de desarrollo
-npm run dev
-```
-
-El frontend estará corriendo en: **http://localhost:3000**
-
-## 👤 Usuarios de Prueba
-
-### Administrador
-- **Email:** `admin@newera.com`
-- **Contraseña:** `admin123`
-- **Acceso:** Panel admin completo
-
-### Cliente
-- **Email:** `cliente@test.com`
-- **Contraseña:** `cliente123`
-- **Acceso:** Tienda y pedidos
-
-### Repartidor
-- **Email:** `repartidor@newera.com`
-- **Contraseña:** `repartidor123`
-- **Acceso:** Panel de entregas
-
-## 🛠️ Stack Tecnológico
-
-### Backend
-- **Framework:** Express.js 4.21
-- **ORM:** Prisma 6.2
-- **Base de Datos:** PostgreSQL 14+
-- **Autenticación:** JWT (jsonwebtoken)
-- **Validación:** Joi
-- **Seguridad:** Helmet, CORS, Rate Limiting
-- **Upload:** Multer
+## 🚀 Tecnologías
 
 ### Frontend
-- **Framework:** Next.js 16 (App Router + Turbopack)
-- **UI:** React 19 + TypeScript
-- **Estilos:** Tailwind CSS 4
-- **State Management:** React Hooks
-- **HTTP Client:** Fetch API nativo
+- **Framework:** Next.js 15.1.4 (React 19)
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS 4.0
+- **Estado:** React Hooks + Context API
+- **Cliente HTTP:** Fetch API nativo
+- **Almacenamiento:** localStorage
 
-## 📁 Estructura de la Base de Datos
+### Backend
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Base de Datos:** PostgreSQL
+- **ORM:** Prisma
+- **Autenticación:** JWT (jsonwebtoken)
+- **Encriptación:** bcryptjs
+- **Validación:** express-validator
+- **Upload:** Multer
 
-### Tablas Principales
-- **User** - Usuarios del sistema (clientes, admin, repartidores)
-- **Product** - Productos del catálogo
-- **Category** - Categorías de productos
-- **Order** - Pedidos realizados
-- **OrderItem** - Ítems de cada pedido
-- **Address** - Direcciones de entrega de usuarios
+---
 
-### Relaciones
-- Un usuario puede tener múltiples direcciones
-- Un usuario puede tener múltiples órdenes
-- Una orden pertenece a un usuario (cliente)
-- Una orden puede tener un repartidor asignado
-- Una orden contiene múltiples ítems (productos)
+## 📋 Requisitos
 
-## 🔐 Seguridad
+### Software Necesario
+- **Node.js** v18 o superior
+- **PostgreSQL** v14 o superior
+- **npm** o **yarn**
+- **Git**
 
-- ✅ Contraseñas encriptadas con bcrypt
-- ✅ Autenticación con JWT
-- ✅ Rate limiting en endpoints de API
-- ✅ Validación de entrada con Joi
-- ✅ Headers de seguridad con Helmet
-- ✅ CORS configurado
-- ✅ SQL injection prevention con Prisma
+### Recomendado
+- **Visual Studio Code** con extensiones:
+  - ESLint
+  - Prettier
+  - Prisma
+  - Tailwind CSS IntelliSense
 
-## 📸 Sistema de Imágenes
+---
 
-Las imágenes de productos se almacenan en:
-- **Directorio:** `backend/uploads/products/`
-- **Formatos permitidos:** JPG, PNG, GIF, WEBP
-- **Tamaño máximo:** 5MB
-- **Acceso público:** `http://localhost:4000/uploads/products/{filename}`
+## 🔧 Instalación
 
-## 🧪 Testing
-
+### 1. Clonar el Repositorio
 ```bash
-# Backend
-cd backend
-npm test
-
-# Frontend
-cd frontend/frontend
-npm test
+git clone https://github.com/tu-usuario/new-era-supermercado.git
+cd new-era-supermercado
 ```
 
-## 📝 API Endpoints
+### 2. Instalar Dependencias del Backend
+```bash
+cd backend
+npm install
+```
+
+### 3. Instalar Dependencias del Frontend
+```bash
+cd ../frontend/frontend
+npm install
+```
+
+### 4. Configurar Base de Datos
+```bash
+cd ../../backend
+
+# Crear base de datos PostgreSQL
+createdb newera
+
+# Configurar archivo .env (ver sección de Configuración)
+
+# Ejecutar migraciones
+npx prisma migrate dev
+
+# Sembrar datos de prueba (opcional)
+node prisma/seed.js
+```
+
+---
+
+## ⚙️ Configuración
+
+### Backend (.env)
+Crear archivo `.env` en la carpeta `backend`:
+
+```env
+# Base de Datos
+DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/newera"
+
+# JWT
+JWT_SECRET="tu_secreto_jwt_super_seguro_aqui"
+JWT_EXPIRES_IN="7d"
+
+# Servidor
+PORT=3001
+NODE_ENV=development
+
+# Uploads
+UPLOAD_PATH="./uploads"
+```
+
+### Frontend (.env)
+Crear archivo `.env` en la carpeta `frontend/frontend`:
+
+```env
+# API
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+
+# Opcionales
+NEXT_PUBLIC_APP_NAME="New Era Supermercado"
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+---
+
+## 🎮 Uso
+
+### Iniciar el Backend
+```bash
+cd backend
+npm start
+```
+El servidor estará disponible en: `http://localhost:3001`
+
+### Iniciar el Frontend
+```bash
+cd frontend/frontend
+npm run dev
+```
+La aplicación estará disponible en: `http://localhost:3000`
+
+### Usuarios de Prueba
+
+**Administrador:**
+- Email: `admin@newera.com`
+- Password: `Admin123`
+
+**Cliente:**
+- Email: `cliente@ejemplo.com`
+- Password: `Cliente123`
+
+**Cajero:**
+- Email: `cajero@newera.com`
+- Password: `Cajero123`
+
+**Repartidor:**
+- Email: `repartidor@newera.com`
+- Password: `Repartidor123`
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+new-era-supermercado/
+├── backend/
+│   ├── prisma/
+│   │   ├── schema.prisma          # Esquema de base de datos
+│   │   ├── seed.js                # Datos de prueba
+│   │   └── migrations/            # Migraciones
+│   ├── src/
+│   │   ├── config/                # Configuraciones
+│   │   ├── controllers/           # Controladores
+│   │   ├── middlewares/           # Middlewares
+│   │   ├── routes/                # Rutas de API
+│   │   ├── services/              # Lógica de negocio
+│   │   └── validators/            # Validaciones
+│   ├── uploads/                   # Archivos subidos
+│   ├── server.js                  # Punto de entrada
+│   └── package.json
+│
+├── frontend/
+│   └── frontend/
+│       ├── app/                   # Páginas de Next.js
+│       │   ├── (shop)/           # Rutas de tienda
+│       │   ├── admin/            # Dashboard admin
+│       │   ├── cashier/          # Dashboard cajero
+│       │   ├── deliverer/        # Dashboard repartidor
+│       │   ├── my-orders/        # Pedidos del cliente
+│       │   ├── my-addresses/     # Direcciones del cliente
+│       │   └── my-profile/       # Perfil del cliente
+│       ├── components/           # Componentes reutilizables
+│       │   ├── auth/            # Componentes de autenticación
+│       │   ├── admin/           # Componentes de admin
+│       │   └── ...
+│       ├── lib/                 # Utilidades y helpers
+│       │   ├── api-admin.ts    # Cliente API admin
+│       │   ├── api-customer.ts # Cliente API cliente
+│       │   └── ...
+│       ├── hooks/              # React Hooks personalizados
+│       ├── types/              # Definiciones TypeScript
+│       ├── public/             # Archivos estáticos
+│       └── package.json
+│
+├── docs/                       # Documentación adicional
+├── CHANGELOG.md               # Registro de cambios
+├── CONFIGURACION.md           # Guía de configuración
+└── README.md                  # Este archivo
+```
+
+---
+
+## 🔌 API Endpoints
 
 ### Autenticación
-- `POST /api/auth/register` - Registrar nuevo usuario
-- `POST /api/auth/login` - Iniciar sesión
+```
+POST   /api/auth/register       # Registrar nuevo usuario
+POST   /api/auth/login          # Iniciar sesión
+PUT    /api/auth/profile        # Actualizar perfil
+PUT    /api/auth/change-password # Cambiar contraseña
+```
 
-### Productos (Público)
-- `GET /api/products` - Listar productos activos
-- `GET /api/products/:id` - Obtener un producto
-- `GET /api/categories` - Listar categorías
+### Productos
+```
+GET    /api/products            # Listar productos
+GET    /api/products/:id        # Ver producto
+POST   /api/products            # Crear producto (Admin)
+PUT    /api/products/:id        # Actualizar producto (Admin)
+DELETE /api/products/:id        # Eliminar producto (Admin)
+```
 
-### Productos (Admin)
-- `POST /api/products` - Crear producto
-- `PATCH /api/products/:id` - Actualizar producto
-- `DELETE /api/products/:id` - Eliminar producto
+### Categorías
+```
+GET    /api/categories          # Listar categorías
+POST   /api/categories          # Crear categoría (Admin)
+PUT    /api/categories/:id      # Actualizar categoría (Admin)
+DELETE /api/categories/:id      # Eliminar categoría (Admin)
+```
 
-### Órdenes
-- `GET /api/orders` - Listar órdenes (filtros opcionales)
-- `GET /api/orders/:id` - Obtener orden específica
-- `POST /api/orders` - Crear nueva orden
-- `PATCH /api/orders/:id/status` - Actualizar estado
+### Pedidos
+```
+GET    /api/orders              # Listar pedidos (Admin)
+GET    /api/orders/my-orders    # Mis pedidos (Cliente)
+GET    /api/orders/:id          # Ver pedido
+POST   /api/orders              # Crear pedido
+PUT    /api/orders/:id          # Actualizar pedido (Admin)
+```
 
-### Upload
-- `POST /api/upload/product-image` - Subir imagen de producto
+### Direcciones
+```
+GET    /api/addresses           # Mis direcciones
+POST   /api/addresses           # Crear dirección
+PUT    /api/addresses/:id       # Actualizar dirección
+PUT    /api/addresses/:id/default # Establecer por defecto
+DELETE /api/addresses/:id       # Eliminar dirección
+```
 
-## 🐛 Solución de Problemas
+### Promociones
+```
+GET    /api/promotions          # Listar promociones
+POST   /api/promotions          # Crear promoción (Admin)
+PUT    /api/promotions/:id      # Actualizar promoción (Admin)
+DELETE /api/promotions/:id      # Eliminar promoción (Admin)
+```
 
-### Backend no conecta con la DB
-- Verifica que PostgreSQL esté corriendo
-- Verifica las credenciales en `DATABASE_URL`
-- Ejecuta `npx prisma migrate dev`
+### Uploads
+```
+POST   /api/upload              # Subir imagen
+```
 
-### Frontend no puede conectar con Backend
-- Verifica que el backend esté corriendo en puerto 4000
-- Verifica `NEXT_PUBLIC_API_URL` en `.env.local`
-- Reinicia el servidor de desarrollo
+---
 
-### Las imágenes no se muestran
-- Verifica que el backend esté sirviendo archivos estáticos
-- Verifica que las URLs de imágenes apunten al puerto correcto (4000)
-- Verifica permisos del directorio `uploads/`
+## 👥 Roles y Permisos
 
-## 📄 Licencia
+| Funcionalidad | Cliente | Cajero | Repartidor | Admin |
+|--------------|---------|--------|------------|-------|
+| Ver productos | ✅ | ✅ | ❌ | ✅ |
+| Crear pedido | ✅ | ❌ | ❌ | ✅ |
+| Ver mis pedidos | ✅ | ❌ | ❌ | ❌ |
+| Gestionar direcciones | ✅ | ❌ | ❌ | ❌ |
+| Procesar pagos | ❌ | ✅ | ❌ | ✅ |
+| Ver pedidos asignados | ❌ | ❌ | ✅ | ✅ |
+| Actualizar entrega | ❌ | ❌ | ✅ | ✅ |
+| Gestionar productos | ❌ | ❌ | ❌ | ✅ |
+| Gestionar usuarios | ❌ | ❌ | ❌ | ✅ |
+| Ver reportes | ❌ | ❌ | ❌ | ✅ |
 
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+---
 
-## 👥 Contribución
+## 📸 Capturas de Pantalla
+
+> ⚠️ Las capturas de pantalla se añadirán próximamente
+
+---
+
+## 📚 Documentación
+
+### Documentación Adicional
+- [CHANGELOG.md](./CHANGELOG.md) - Registro completo de cambios
+- [CONFIGURACION.md](./CONFIGURACION.md) - Guía detallada de configuración
+- [docs/architecture/](./docs/architecture/) - Arquitectura del sistema
+
+### Guías
+1. **Configuración Inicial** - Ver [CONFIGURACION.md](./CONFIGURACION.md)
+2. **Agregar Nuevo Rol** - Ver documentación de Prisma
+3. **Crear Nuevo Endpoint** - Seguir patrón MVC del proyecto
+4. **Personalizar Tema** - Editar `globals.css` y Tailwind config
+
+---
+
+## 🤝 Contribuir
 
 Las contribuciones son bienvenidas. Por favor:
+
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📞 Soporte
-
-Para problemas o preguntas, por favor abre un issue en GitHub.
+### Convenciones
+- Usar TypeScript en frontend
+- Seguir ESLint rules del proyecto
+- Escribir comentarios descriptivos
+- Mantener estructura de carpetas existente
 
 ---
 
-**Desarrollado con ❤️ para New Era Supermercado**
+## 🐛 Reportar Bugs
+
+Si encuentras un bug, por favor abre un issue con:
+- Descripción del bug
+- Pasos para reproducir
+- Comportamiento esperado vs actual
+- Screenshots (si aplica)
+- Versión del navegador/OS
+
+---
+
+## 📞 Soporte
+
+- **Email:** soporte@newerasupermercado.com
+- **Teléfono:** +57 300 123 4567
+- **Horario:** Lunes a Viernes, 8am - 6pm COT
+
+---
+
+## 🔐 Seguridad
+
+Si descubres una vulnerabilidad de seguridad, por favor envía un email a:
+**security@newerasupermercado.com**
+
+**NO** abras un issue público para vulnerabilidades de seguridad.
+
+---
+
+## 📄 Licencia
+
+Este proyecto es propietario y pertenece a **New Era Supermercado**.
+
+© 2026 New Era Supermercado. Todos los derechos reservados.
+
+---
+
+## 🙏 Agradecimientos
+
+- Next.js Team - Por el increíble framework
+- Tailwind Labs - Por Tailwind CSS
+- Prisma Team - Por el mejor ORM
+- Vercel - Por el hosting
+
+---
+
+## 🗺️ Roadmap
+
+### Versión 2.1 (Q3 2026)
+- [ ] Notificaciones push en tiempo real
+- [ ] Integración con pasarelas de pago
+- [ ] Sistema de puntos y recompensas
+- [ ] App móvil nativa
+
+### Versión 2.2 (Q4 2026)
+- [ ] Seguimiento GPS de repartidores
+- [ ] Chat de soporte en vivo
+- [ ] Reseñas y valoraciones de productos
+- [ ] Sistema de recomendaciones con IA
+
+### Versión 3.0 (2027)
+- [ ] Multi-tienda
+- [ ] Marketplace de vendedores
+- [ ] Suscripciones mensuales
+- [ ] Integración con Alexa/Google Home
+
+---
+
+<div align="center">
+
+**⭐ Si este proyecto te ha sido útil, por favor dale una estrella ⭐**
+
+Hecho con ❤️ por el equipo de New Era Supermercado
+
+</div>
