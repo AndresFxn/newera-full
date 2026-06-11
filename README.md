@@ -3,8 +3,9 @@
 <div align="center">
 
 ![New Era Supermercado](https://img.shields.io/badge/New%20Era-Supermercado-1c6554?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-2.0.1-0C447C?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.1.0-0C447C?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-success?style=for-the-badge)
+
 
 **Plataforma moderna de comercio electrónico para supermercado con entregas rápidas**
 
@@ -53,6 +54,9 @@ Proporcionar una experiencia de compra en línea fluida y moderna, con entregas 
 - ✅ **Promociones y Ofertas** - Sistema de descuentos y promociones
 - ✅ **Búsqueda Avanzada** - Filtros por categoría, precio y disponibilidad
 - ✅ **Responsive Design** - Optimizado para móvil, tablet y desktop
+- ✅ **Pasarela Wompi** - Pagos seguros con tarjeta y Nequi integrados
+- ✅ **Pago Posterior** - Pagar pedidos pendientes desde el historial
+
 
 ### 👨‍💼 Para Administradores
 - ✅ **Dashboard Completo** - Estadísticas y métricas en tiempo real
@@ -61,7 +65,9 @@ Proporcionar una experiencia de compra en línea fluida y moderna, con entregas 
 - ✅ **Gestión de Pedidos** - Actualización de estados y seguimiento
 - ✅ **Gestión de Usuarios** - Control de roles y permisos
 - ✅ **Gestión de Promociones** - Crear y administrar ofertas
+- ✅ **Alertas en Tiempo Real** - Notificaciones sonoras de nuevos pedidos
 - ✅ **Reportes** - Análisis de ventas y performance
+
 
 ### 💰 Para Cajeros
 - ✅ **Dashboard de Caja** - Vista simplificada de pedidos
@@ -467,14 +473,13 @@ Este proyecto es propietario y pertenece a **New Era Supermercado**.
 
 ## �🗺️ Roadmap
 
-### Versión 2.1 (Q3 2026)
-- [ ] Notificaciones push en tiempo real
-- [ ] Integración con pasarelas de pago
-- [ ] Sistema de puntos y recompensas
-- [ ] App móvil nativa
+### Versión 2.1 (Completado)
+- [x] Integración con pasarelas de pago (Wompi)
+- [x] Notificaciones de pedidos en tiempo real (Polling + Sound)
 
 ### Versión 2.2 (Q4 2026)
 - [ ] Seguimiento GPS de repartidores
+
 - [ ] Chat de soporte en vivo
 - [ ] Reseñas y valoraciones de productos
 - [ ] Sistema de recomendaciones con IA
