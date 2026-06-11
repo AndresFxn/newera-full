@@ -12,9 +12,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getMyOrders } from '@/lib/api-customer';
+import { getMyOrders, getWompiSignature } from '@/lib/api-customer';
 import { getCurrentUser } from '@/lib/api-admin';
 import { formatPrice } from '@/lib/format';
+import WompiWidget from '@/components/WompiWidget';
+import Toast from '@/components/Toast';
+import { BRAND } from '@/lib/constants';
+
 
 interface Order {
   id: string;
@@ -39,6 +43,11 @@ export default function MyOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('ALL');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [paymentData, setPaymentData] = useState<any>(null);
+  const [showWompi, setShowWompi] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
+
 
   useEffect(() => {
     // Verificar autenticación
@@ -49,7 +58,18 @@ export default function MyOrdersPage() {
     }
 
     loadOrders();
+    loadUser();
   }, [filter, router]);
+
+  const loadUser = async () => {
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Error loading user:', error);
+    }
+  };
+
 
   const loadOrders = async () => {
     try {
@@ -65,6 +85,32 @@ export default function MyOrdersPage() {
       setLoading(false);
     }
   };
+
+  const handlePayNow = async (order: Order) => {
+    try {
+      setLoading(true);
+      const sigData = await getWompiSignature(order.id);
+      setPaymentData(sigData);
+      setShowWompi(true);
+    } catch (error: any) {
+      setMessage({ text: error.message || 'Error al iniciar el pago', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowWompi(false);
+    setMessage({ text: '¡Excelente! Tu pago ha sido aprobado.', type: 'success' });
+    loadOrders(); // Recargar para ver el estado actualizado (PAID)
+    setSelectedOrder(null);
+  };
+
+  const handlePaymentError = (error: any) => {
+    setShowWompi(false);
+    setMessage({ text: `Hubo un inconveniente: ${error.status_message || 'Error en el pago'}`, type: 'error' });
+  };
+
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -102,7 +148,30 @@ export default function MyOrdersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-8">
+      {message && (
+        <Toast 
+          message={message.text} 
+          type={message.type} 
+          onClose={() => setMessage(null)} 
+        />
+      )}
+
+      {showWompi && paymentData && (
+        <WompiWidget
+          orderId={paymentData.reference}
+          amountInCents={paymentData.amountInCents}
+          signature={paymentData.signature}
+          publicKey={paymentData.publicKey}
+          customerEmail={user?.email || ''}
+          customerName={user?.name || ''}
+          onSuccess={handlePaymentSuccess}
+          onError={handlePaymentError}
+          onClose={() => setShowWompi(false)}
+        />
+      )}
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <div className="mb-8">
           <Link
@@ -226,15 +295,27 @@ export default function MyOrdersPage() {
                 </div>
 
                 {/* Actions */}
-                <button
-                  onClick={() => setSelectedOrder(order)}
-                  className="w-full py-2.5 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg font-semibold hover:border-[#1c6554] dark:hover:border-green-400 hover:text-[#1c6554] dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                >
-                  Ver detalles completos
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => setSelectedOrder(order)}
+                    className="flex-1 py-2.5 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg font-semibold hover:border-slate-400 dark:hover:border-slate-500 transition-all text-sm"
+                  >
+                    Detalles
+                  </button>
+                  {order.status === 'PENDING' && (
+                    <button
+                      onClick={() => handlePayNow(order)}
+                      className="flex-1 py-2.5 bg-[#1c6554] hover:bg-[#1c6554]/90 text-white rounded-lg font-bold shadow-md hover:shadow-lg transition-all text-sm flex items-center justify-center gap-2"
+                    >
+                      <CreditCardIcon />
+                      Pagar Ahora
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
+
         )}
 
         {/* Modal de detalles */}
@@ -308,10 +389,19 @@ export default function MyOrdersPage() {
                 </div>
               </div>
 
-              <div className="sticky bottom-0 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-b-2xl border-t border-slate-200 dark:border-slate-700">
+              <div className="sticky bottom-0 bg-white dark:bg-slate-900 px-6 py-4 rounded-b-2xl border-t border-slate-200 dark:border-slate-700 flex flex-col gap-3">
+                {selectedOrder.status === 'PENDING' && (
+                  <button
+                    onClick={() => handlePayNow(selectedOrder)}
+                    className="w-full bg-[#1c6554] hover:bg-[#1c6554]/90 text-white px-4 py-3.5 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+                  >
+                    <CreditCardIcon />
+                    Finalizar Pago con Wompi
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="w-full bg-slate-900 dark:bg-slate-700 text-white px-4 py-3 rounded-xl font-semibold hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
+                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-3 rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
                   Cerrar
                 </button>
@@ -349,6 +439,14 @@ function CloseIcon() {
   return (
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+function CreditCardIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
     </svg>
   );
 }

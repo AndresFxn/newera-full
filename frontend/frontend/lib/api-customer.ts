@@ -105,6 +105,30 @@ export async function createOrder(data: {
   return response.data;
 }
 
+/**
+ * Obtiene la firma de Wompi para una orden
+ * 
+ * **Endpoint:** GET /api/orders/:id/wompi-signature
+ * **Permisos:** CUSTOMER
+ * 
+ * @param {string} orderId - ID de la orden
+ * @returns {Promise<any>} Datos de firma ({signature, amountInCents, reference, publicKey})
+ */
+export async function getWompiSignature(orderId: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/orders/${orderId}/wompi-signature`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || 'Error al obtener firma de pago');
+  }
+
+  const response = await res.json();
+  return response.data;
+}
+
+
 // ==========================================
 // DIRECCIONES - CUSTOMER
 // ==========================================

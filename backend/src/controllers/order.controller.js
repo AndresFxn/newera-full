@@ -8,7 +8,10 @@
  */
 
 import * as orderService from '../services/order.service.js';
+import * as wompiService from '../services/wompi.service.js';
 import { AppError } from '../middlewares/error.middleware.js';
+import prisma from '../config/database.js';
+
 
 /** Estados que puede actualizar un repartidor */
 const DELIVERER_ALLOWED = ['DISPATCHED', 'DELIVERED'];
@@ -84,3 +87,80 @@ export const updateOrderStatus = async (req, res, next) => {
     next(error);
   }
 };
+
+/** GET /api/orders/:id/wompi-signature — Obtener firma de Wompi para una orden */
+export const getWompiSignature = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const order = await prisma.order.findUnique({
+      where: { id, customerId: req.user.id },
+    });
+
+    if (!order) {
+      throw new AppError('Orden no encontrada.', 404);
+    }
+
+    if (order.status !== 'PENDING') {
+      throw new AppError(`La orden ya está en estado ${order.status}.`, 400);
+    }
+
+    // El monto debe estar en centavos para Wompi
+    const amountInCents = Math.round(parseFloat(order.total) * 100);
+    const signature = wompiService.generateIntegritySignature(order.id, amountInCents);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        signature,
+        amountInCents,
+        reference: order.id,
+        publicKey: "pub_test_kwx4C0fyFRKdxn32MIIECJpRIWfonKYj", // Hardcoded to bypass stale env issues
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/** POST /api/orders/webhook/wompi — Webhook de Wompi */
+export const handleWompiWebhook = async (req, res, next) => {
+  try {
+    const receivedHash = req.headers['wompi_hash'];
+    
+    // 1. Verificar autenticidad
+    const isValid = wompiService.verifyWebhookHash(req.body, receivedHash);
+    if (!isValid) {
+      console.warn('Webhook de Wompi recibido con hash inválido');
+      return res.status(401).json({ success: false, message: 'Invalid hash' });
+    }
+
+    const { data: { transaction }, event } = req.body;
+
+    // Solo nos interesan actualizaciones de transacciones
+    if (event !== 'transaction.updated') {
+      return res.status(200).json({ success: true });
+    }
+
+    // 2. Procesar según el estado de la transacción
+    // Estados Wompi: APPROVED, DECLINED, VOIDED, ERROR
+    if (transaction.status === 'APPROVED') {
+      const orderId = transaction.reference;
+      
+      const order = await prisma.order.findUnique({ where: { id: orderId } });
+      
+      if (order && order.status === 'PENDING') {
+        await orderService.updateOrderStatus(orderId, 'PAID', 'SYSTEM_WOMPI');
+        console.log(`Orden ${orderId} marcada como PAGADA vía Wompi`);
+      }
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error procesando webhook de Wompi:', error);
+    // Respondemos 200 para evitar que Wompi reintente infinitamente si es un error lógico nuestro,
+    // pero logueamos el error.
+    res.status(200).json({ success: false, message: 'Error processing webhook' });
+  }
+};
+
