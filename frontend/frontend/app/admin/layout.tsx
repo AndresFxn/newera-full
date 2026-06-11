@@ -36,13 +36,59 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [user, setUser] = useState<any>(null);
+
 
   // Obtener datos del usuario al montar el componente
   useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
+    
+    // Cargar notificaciones iniciales y configurar sondeo
+    checkNewOrders();
+    const interval = setInterval(checkNewOrders, 30000); // Cada 30 segundos
+    
+    return () => clearInterval(interval);
   }, []);
+
+  const checkNewOrders = async () => {
+    try {
+      const { data: orders } = await getAllOrders({ limit: 10 });
+      
+      // Filtrar órdenes de hoy o las últimas 10
+      const newNotifications = orders.map((order: any) => ({
+        id: order.id,
+        title: 'Nuevo pedido',
+        message: `${order.customer.name} ha realizado un pedido de ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(order.total)}`,
+        time: new Date(order.createdAt).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+        unread: order.status === 'PENDING' || order.status === 'PAID',
+        raw: order
+      }));
+
+      // Verificar si hay órdenes que no teníamos antes para sonar la alerta
+      setNotifications(prev => {
+        const hasNew = newNotifications.length > 0 && prev.length > 0 && newNotifications[0].id !== prev[0].id;
+        if (hasNew) {
+          playNotificationSound();
+        }
+        return newNotifications;
+      });
+
+      const unread = newNotifications.filter(n => n.unread).length;
+      setUnreadCount(unread);
+
+    } catch (error) {
+      console.error('Error polling orders:', error);
+    }
+  };
+
+  const playNotificationSound = () => {
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    audio.play().catch(e => console.warn('No se pudo reproducir el sonido:', e));
+  };
+
 
   /** Enlaces de navegación del sidebar */
   const navLinks = [
@@ -187,15 +233,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
             <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
 
-            {/* Botón de notificaciones */}
+             {/* Botón de notificaciones */}
             <div className="relative">
               <button
-                onClick={() => setShowNotifications(!showNotifications)}
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  if (!showNotifications) setUnreadCount(0); // Limpiar visualmente al abrir
+                }}
                 className="relative p-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <BellIcon />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-[#1c6554] rounded-full"></span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-2 right-2 w-4 h-4 bg-[#b43232] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-bounce shadow-sm">
+                    {unreadCount}
+                  </span>
+                )}
               </button>
+
 
               {/* Dropdown de notificaciones */}
               {showNotifications && (
@@ -204,35 +258,47 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowNotifications(false)}
                   />
-                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg z-50 animate-fade-in rounded-xl">
-                    <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                   <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg z-50 animate-fade-in rounded-xl">
+                    <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                       <h3 className="font-semibold text-slate-900 dark:text-white">Notificaciones</h3>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] px-2 py-0.5 bg-red-100 text-red-600 font-bold rounded-full">
+                          {unreadCount} NUEVAS
+                        </span>
+                      )}
                     </div>
                     <div className="max-h-96 overflow-y-auto">
-                      <NotificationItem
-                        title="Nuevo pedido"
-                        message="Juan Pérez ha realizado un pedido de $85.000"
-                        time="Hace 5 minutos"
-                        unread
-                      />
-                      <NotificationItem
-                        title="Stock bajo"
-                        message="Leche Entera Alquería tiene menos de 10 unidades"
-                        time="Hace 1 hora"
-                        unread
-                      />
-                      <NotificationItem
-                        title="Pedido completado"
-                        message="El pedido ORD-001 fue entregado exitosamente"
-                        time="Hace 2 horas"
-                      />
+                      {notifications.length > 0 ? (
+                        notifications.map((notif) => (
+                          <NotificationItem
+                            key={notif.id}
+                            title={notif.title}
+                            message={notif.message}
+                            time={notif.time}
+                            unread={notif.unread}
+                            onClick={() => {
+                              setShowNotifications(false);
+                              router.push(`/admin/orders/${notif.id}`);
+                            }}
+                          />
+                        ))
+                      ) : (
+                        <div className="p-8 text-center text-slate-500 text-sm">
+                          No hay notificaciones recientes
+                        </div>
+                      )}
                     </div>
                     <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 text-center">
-                      <button className="text-sm text-[#1c6554] hover:text-[#1c6554]/80 font-medium">
-                        Ver todas las notificaciones
-                      </button>
+                      <Link 
+                        href="/admin/orders"
+                        onClick={() => setShowNotifications(false)}
+                        className="text-sm text-[#1c6554] hover:text-[#1c6554]/80 font-medium"
+                      >
+                        Ver todos los pedidos
+                      </Link>
                     </div>
                   </div>
+
                 </>
               )}
             </div>
@@ -268,11 +334,15 @@ interface NotificationItemProps {
   message: string;
   time: string;
   unread?: boolean;
+  onClick?: () => void;
 }
 
-function NotificationItem({ title, message, time, unread }: NotificationItemProps) {
+function NotificationItem({ title, message, time, unread, onClick }: NotificationItemProps) {
   return (
-    <div className={`px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b border-slate-100 dark:border-slate-700 ${unread ? 'bg-slate-50/50 dark:bg-slate-700/30' : ''}`}>
+    <div 
+      onClick={onClick}
+      className={`px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b border-slate-100 dark:border-slate-700 ${unread ? 'bg-slate-50/50 dark:bg-slate-700/30' : ''}`}
+    >
       <div className="flex items-start gap-3">
         {unread && (
           <div className="w-2 h-2 bg-[#1c6554] rounded-full mt-2 flex-shrink-0" />
@@ -286,6 +356,7 @@ function NotificationItem({ title, message, time, unread }: NotificationItemProp
     </div>
   );
 }
+
 
 // ==================== ICONOS ====================
 
