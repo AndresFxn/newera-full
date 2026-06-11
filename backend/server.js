@@ -32,7 +32,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "http://localhost:4000", "http://localhost:3000"],
+      imgSrc: ["'self'", "data:", "http://localhost:4000", "http://localhost:3000", "http://localhost:3001"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
     },
@@ -43,8 +43,9 @@ app.use(helmet({
 // CORS
 app.use(cors({
   origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:3000' // Next.js frontend
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3000', // Next.js frontend
+    'http://localhost:3001'  // Fallback for port conflicts
   ],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
