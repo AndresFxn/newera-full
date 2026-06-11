@@ -42,9 +42,9 @@ export default function MyOrdersPage() {
 
   useEffect(() => {
     // Verificar autenticación
-    const user = getCurrentUser();
-    if (!user || user.role !== 'CUSTOMER') {
-      router.push('/auth');
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      router.push('/auth/login');
       return;
     }
 

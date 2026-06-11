@@ -45,3 +45,33 @@ export const getMe = async (req, res) => {
     data: { user: req.user },
   });
 };
+
+/** POST /api/auth/forgot-password — Solicitar recuperación de contraseña */
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const result = await authService.requestPasswordReset(email);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/** POST /api/auth/reset-password — Restablecer contraseña con token */
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    const result = await authService.resetPassword(token, password);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

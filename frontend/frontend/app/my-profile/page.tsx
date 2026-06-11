@@ -35,9 +35,15 @@ export default function MyProfilePage() {
 
   useEffect(() => {
     // Verificar autenticación
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      router.push('/auth/login');
+      return;
+    }
+
     const currentUser = getCurrentUser();
-    if (!currentUser || currentUser.role !== 'CUSTOMER') {
-      router.push('/auth');
+    if (!currentUser) {
+      router.push('/auth/login');
       return;
     }
 

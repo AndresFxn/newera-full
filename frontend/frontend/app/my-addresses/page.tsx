@@ -23,11 +23,11 @@ import { getCurrentUser } from '@/lib/api-admin';
 
 interface Address {
   id: string;
-  street: string;
+  label: string;
+  address: string;
   city: string;
-  state: string;
-  zipCode: string;
-  label?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isDefault: boolean;
 }
 
@@ -40,9 +40,9 @@ export default function MyAddressesPage() {
 
   useEffect(() => {
     // Verificar autenticación
-    const user = getCurrentUser();
-    if (!user || user.role !== 'CUSTOMER') {
-      router.push('/auth');
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      router.push('/auth/login');
       return;
     }
 
@@ -187,12 +187,9 @@ export default function MyAddressesPage() {
 
                 {/* Address details */}
                 <div className="space-y-2 mb-4 mt-2">
-                  <p className="text-slate-900 dark:text-white font-medium">{address.street}</p>
+                  <p className="text-slate-900 dark:text-white font-medium">{address.address}</p>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    {address.city}, {address.state}
-                  </p>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    CP: {address.zipCode}
+                    {address.city}
                   </p>
                 </div>
 
@@ -248,11 +245,9 @@ interface AddressModalProps {
 
 function AddressModal({ address, onClose, onSave }: AddressModalProps) {
   const [formData, setFormData] = useState({
-    street: address?.street || '',
-    city: address?.city || '',
-    state: address?.state || '',
-    zipCode: address?.zipCode || '',
     label: address?.label || '',
+    address: address?.address || '',
+    city: address?.city || '',
     isDefault: address?.isDefault || false,
   });
 
@@ -279,10 +274,11 @@ function AddressModal({ address, onClose, onSave }: AddressModalProps) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              Etiqueta (opcional)
+              Etiqueta *
             </label>
             <input
               type="text"
+              required
               value={formData.label}
               onChange={(e) => setFormData({ ...formData, label: e.target.value })}
               className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-xl focus:border-[#1c6554] dark:focus:border-green-500 focus:ring-4 focus:ring-[#1c6554]/10 dark:focus:ring-green-500/20 transition-all text-slate-900 dark:text-white"
@@ -297,54 +293,24 @@ function AddressModal({ address, onClose, onSave }: AddressModalProps) {
             <input
               type="text"
               required
-              value={formData.street}
-              onChange={(e) => setFormData({ ...formData, street: e.target.value })}
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-xl focus:border-[#1c6554] dark:focus:border-green-500 focus:ring-4 focus:ring-[#1c6554]/10 dark:focus:ring-green-500/20 transition-all text-slate-900 dark:text-white"
               placeholder="Calle 123 #45-67"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                Ciudad *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-xl focus:border-[#1c6554] dark:focus:border-green-500 focus:ring-4 focus:ring-[#1c6554]/10 dark:focus:ring-green-500/20 transition-all text-slate-900 dark:text-white"
-                placeholder="Bogotá"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                Departamento *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.state}
-                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-xl focus:border-[#1c6554] dark:focus:border-green-500 focus:ring-4 focus:ring-[#1c6554]/10 dark:focus:ring-green-500/20 transition-all text-slate-900 dark:text-white"
-                placeholder="Cundinamarca"
-              />
-            </div>
-          </div>
-
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              Código Postal *
+              Ciudad *
             </label>
             <input
               type="text"
               required
-              value={formData.zipCode}
-              onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+              value={formData.city}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
               className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-xl focus:border-[#1c6554] dark:focus:border-green-500 focus:ring-4 focus:ring-[#1c6554]/10 dark:focus:ring-green-500/20 transition-all text-slate-900 dark:text-white"
-              placeholder="110111"
+              placeholder="Bogotá"
             />
           </div>
 

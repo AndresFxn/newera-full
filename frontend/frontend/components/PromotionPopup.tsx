@@ -38,24 +38,30 @@ export default function PromotionPopup() {
 
   async function loadPromotions() {
     try {
+      console.log('[PromotionPopup] Cargando promociones...');
       const { data: allPromotions } = await getPromotions({ onlyActive: true });
       
+      console.log('[PromotionPopup] Promociones recibidas:', allPromotions);
+      
       if (!allPromotions || allPromotions.length === 0) {
+        console.log('[PromotionPopup] No hay promociones activas');
         return;
       }
 
       // Ordenar por prioridad (mayor primero)
       const sorted = allPromotions.sort((a: Promotion, b: Promotion) => b.priority - a.priority);
       
+      console.log('[PromotionPopup] Mostrando', sorted.length, 'promociones');
       setPromotions(sorted);
       
       // Mostrar popup con animación después de 1 segundo
       setTimeout(() => {
+        console.log('[PromotionPopup] Mostrando popup...');
         setIsVisible(true);
         setIsAnimating(true);
       }, 1000);
     } catch (error) {
-      console.error('Error al cargar promociones:', error);
+      console.error('[PromotionPopup] Error al cargar promociones:', error);
     }
   }
 
@@ -107,8 +113,12 @@ export default function PromotionPopup() {
     setCurrentIndex((prev) => (prev - 1 + promotions.length) % promotions.length);
   }
 
-  if (!isVisible || promotions.length === 0) return null;
+  if (!isVisible || promotions.length === 0) {
+    console.log('[PromotionPopup] No visible:', { isVisible, promotionsCount: promotions.length });
+    return null;
+  }
 
+  console.log('[PromotionPopup] Renderizando popup visible');
   const promotion = promotions[currentIndex];
 
   return (

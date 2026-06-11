@@ -16,6 +16,7 @@ import { API_BASE_URL } from '@/lib/constants';
  */
 function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
+  // Buscar el token en la clave auth_token que usa el sistema
   return localStorage.getItem('auth_token');
 }
 
@@ -78,13 +79,15 @@ export async function getMyOrders(filters?: {
  * 
  * @param {Object} data - Datos de la orden
  * @param {Array} data.items - Items de la orden [{productId, quantity, unitPrice}]
- * @param {string} data.address - Dirección de entrega
+ * @param {string} data.addressId - ID de la dirección de entrega
+ * @param {number} data.distance - Distancia en kilómetros para calcular envío
  * @param {string} [data.notes] - Notas adicionales
  * @returns {Promise<any>} Orden creada
  */
 export async function createOrder(data: {
   items: Array<{ productId: string; quantity: number; unitPrice: number }>;
-  address: string;
+  addressId: string;
+  distance: number;
   notes?: string;
 }): Promise<any> {
   const res = await fetch(`${API_BASE_URL}/orders`, {

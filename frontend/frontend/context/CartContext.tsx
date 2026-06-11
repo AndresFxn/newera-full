@@ -8,6 +8,7 @@
  * - Validación de stock
  * - Cálculos automáticos de totales
  * - Control del drawer lateral
+ * - Restricción de acceso solo para usuarios autenticados
  * 
  * @module context/CartContext
  */
@@ -25,6 +26,7 @@ import {
 } from 'react';
 import { CART_STORAGE_KEY } from '@/lib/constants';
 import type { CartContextType, CartItem, Product } from '@/lib/types';
+import Toast from '@/components/Toast';
 
 /**
  * Contexto del carrito de compras.
@@ -49,48 +51,116 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('info');
 
-  // Cargar carrito desde localStorage al montar
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY);
-      if (stored) setItems(JSON.parse(stored));
-    } catch {
-      // Datos corruptos o localStorage no disponible (modo privado)
-    }
-    setIsHydrated(true);
+  // Función helper para verificar autenticación
+  const isAuthenticated = useCallback(() => {
+    if (typeof window === 'undefined') return false;
+    // Buscar en ambas claves por compatibilidad
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+    return !!token;
   }, []);
 
-  // Persistir carrito en localStorage cuando cambie
+  // Cargar carrito desde localStorage al montar SOLO si está autenticado
   useEffect(() => {
-    if (!isHydrated) return; // Evitar escribir antes de la hidratación inicial
+    if (!isAuthenticated()) {
+      // No hay usuario logueado, limpiar todo
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch {}
+      setIsHydrated(true);
+      return;
+    }
+
+    // Usuario logueado, cargar carrito
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      if (stored) {
+        setItems(JSON.parse(stored));
+      }
+    } catch {
+      // Datos corruptos, limpiar
+      localStorage.removeItem(CART_STORAGE_KEY);
+    }
+    setIsHydrated(true);
+  }, [isAuthenticated]);
+
+  // Limpiar carrito automáticamente si no hay autenticación
+  useEffect(() => {
+    if (!isHydrated) return;
+    
+    if (!isAuthenticated() && items.length > 0) {
+      // No está autenticado pero tiene items, limpiar inmediatamente
+      setItems([]);
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch {}
+    }
+  }, [isHydrated, isAuthenticated, items]);
+
+  // Persistir carrito SOLO si está autenticado
+  useEffect(() => {
+    if (!isHydrated) return;
+    
+    if (!isAuthenticated()) {
+      // No autenticado, asegurar que esté limpio
+      if (items.length > 0) {
+        setItems([]);
+      }
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch {}
+      return;
+    }
+
+    // Usuario autenticado, persistir normalmente
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      // localStorage no disponible (modo privado, cuota excedida, etc.)
-    }
-  }, [items, isHydrated]);
+    } catch {}
+  }, [items, isHydrated, isAuthenticated]);
 
   /**
    * Agrega un producto al carrito.
    * Si ya existe, incrementa la cantidad en 1 (respetando el stock).
+   * Solo permite agregar si el usuario está autenticado.
    */
   const addItem = useCallback((product: Product) => {
+    // Verificar autenticación SIEMPRE - redirigir inmediatamente al login
+    if (!isAuthenticated()) {
+      window.location.href = '/auth/login';
+      return;
+    }
+
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        // No permitir agregar más allá del stock disponible
-        if (existing.quantity >= product.stock) return prev;
+        if (existing.quantity >= product.stock) {
+          setToastMessage('No hay más stock disponible');
+          setToastType('warning');
+          setShowToast(true);
+          return prev;
+        }
+        
+        setToastMessage('Producto agregado al carrito');
+        setToastType('success');
+        setShowToast(true);
+        
         return prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      // Agregar nuevo producto con cantidad inicial de 1
+      
+      setToastMessage('Producto agregado al carrito');
+      setToastType('success');
+      setShowToast(true);
+      
       return [...prev, { product, quantity: 1 }];
     });
-  }, []);
+  }, [isAuthenticated]);
 
   /**
    * Remueve completamente un producto del carrito.
@@ -151,7 +221,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isOpen]
   );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setShowToast(false)}
+        />
+      )}
+    </CartContext.Provider>
+  );
 }
 
 /**

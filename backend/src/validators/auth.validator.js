@@ -64,3 +64,32 @@ export const loginSchema = Joi.object({
       'any.required': 'La contraseña es obligatoria.',
     }),
 });
+
+
+// FORGOT PASSWORD SCHEMA
+export const forgotPasswordSchema = Joi.object({
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .lowercase()
+    .trim()
+    .required()
+    .messages({
+      'string.email': 'El email no tiene un formato válido.',
+      'any.required': 'El email es obligatorio.',
+    }),
+});
+
+// RESET PASSWORD SCHEMA
+export const resetPasswordSchema = Joi.object({
+  token: Joi.string()
+    .length(64)
+    .hex()
+    .required()
+    .messages({
+      'string.length': 'El token no es válido.',
+      'string.hex': 'El token debe ser hexadecimal.',
+      'any.required': 'El token es obligatorio.',
+    }),
+
+  password: passwordSchema,
+});

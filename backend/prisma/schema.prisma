@@ -25,23 +25,26 @@ enum OrderStatus {
 
 model User {
 
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String   
-  name      String
-  phone     String?
-  role      Role     @default(CUSTOMER)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String   
+  name              String
+  phone             String?
+  role              Role      @default(CUSTOMER)
+  isActive          Boolean   @default(true)
+  
+  // Campos para recuperación de contraseña
+  resetToken        String?   @unique
+  resetTokenExpiry  DateTime?
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  ordersAsCustomer  Order[] @relation("CustomerOrders")
-  ordersAsDeliverer Order[] @relation("DelivererOrders")
-  ordersAsCashier   Order[] @relation("CashierOrders")
+  ordersAsCustomer  Order[]   @relation("CustomerOrders")
+  ordersAsDeliverer Order[]   @relation("DelivererOrders")
+  ordersAsCashier   Order[]   @relation("CashierOrders")
 
   addresses         Address[]
-
-
 
   @@map("users") 
 

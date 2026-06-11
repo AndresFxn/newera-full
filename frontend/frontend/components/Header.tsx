@@ -1,12 +1,16 @@
 /**
  * Header Component - New Era Supermercado
  * 
- * Barra de navegación principal con:
- * - Logo del supermercado
- * - Barra de búsqueda con debounce
- * - Botón de carrito con contador de items
- * - Links de autenticación
- * - Efecto de sombra al hacer scroll
+ * Barra de navegación principal con diseño Flexbox responsivo:
+ * - **Extremo izquierdo:** Logo del supermercado
+ * - **Centro absoluto:** Barra de búsqueda con debounce
+ * - **Extremo derecho:** Botones de autenticación/perfil y carrito
+ * 
+ * **Lógica de Roles:**
+ * - ADMIN: Al hacer clic en el botón de perfil, redirige directamente a /dashboard (sin menú desplegable)
+ * - CLIENTE: Al hacer clic, muestra menú contextual con "Mi Perfil", "Mis Pedidos" y "Mis Órdenes"
+ * 
+ * Incluye efecto de sombra al hacer scroll y contador de items en el carrito.
  * 
  * @module components/Header
  */
@@ -85,6 +89,15 @@ export default function Header({ onSearch }: HeaderProps) {
     router.refresh();
   };
 
+  // Si es ADMIN, redirigir directamente al dashboard
+  const handleUserClick = () => {
+    if (user?.role === 'ADMIN') {
+      router.push('/admin/dashboard');
+    } else {
+      setIsUserMenuOpen(!isUserMenuOpen);
+    }
+  };
+
   return (
     <>
       <header
@@ -95,10 +108,16 @@ export default function Header({ onSearch }: HeaderProps) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 sm:gap-6 h-16">
-            <Logo size="lg" className="flex-shrink-0" />
+          {/* DISEÑO FLEXBOX: Extremo izquierdo | Centro absoluto | Extremo derecho */}
+          <div className="relative flex items-center justify-between h-16 gap-4">
+            
+            {/* EXTREMO IZQUIERDO: Logo */}
+            <div className="flex-shrink-0">
+              <Logo size="lg" />
+            </div>
 
-            <div className="flex-1 max-w-2xl">
+            {/* CENTRO ABSOLUTO: Barra de búsqueda */}
+            <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-md px-4 sm:px-0">
               <div className="relative">
                 <input
                   type="search"
@@ -115,29 +134,42 @@ export default function Header({ onSearch }: HeaderProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* EXTREMO DERECHO: Botones de sesión/perfil y carrito */}
+            <div className="flex items-center gap-3 flex-shrink-0">
               {/* Theme Toggle */}
               <ThemeToggle />
 
-              {/* Menú de usuario o Links de autenticación */}
+              {/* LÓGICA DE ROLES: ADMIN vs CLIENTE */}
               {user ? (
                 <div className="relative user-menu-container">
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={handleUserClick}
                     className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
                   >
                     <UserIcon />
                     <span className="hidden sm:inline max-w-[120px] truncate">{user.name}</span>
-                    <ChevronIcon className={`transform transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    {/* Solo mostrar chevron si NO es admin (porque admin no tiene menú) */}
+                    {user.role !== 'ADMIN' && (
+                      <ChevronIcon className={`transform transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    )}
                   </button>
 
-                  {/* Dropdown Menu */}
-                  {isUserMenuOpen && (
+                  {/* Dropdown Menu - SOLO PARA CLIENTES (no ADMIN) */}
+                  {isUserMenuOpen && user.role !== 'ADMIN' && (
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 py-2 animate-scale-in">
                       <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{user.name}</p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
                       </div>
+                      
+                      <Link
+                        href="/my-profile"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <ProfileIcon />
+                        Mi Perfil
+                      </Link>
                       
                       <Link
                         href="/my-orders"
@@ -154,16 +186,7 @@ export default function Header({ onSearch }: HeaderProps) {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <AddressIcon />
-                        Mis Direcciones
-                      </Link>
-                      
-                      <Link
-                        href="/my-profile"
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <ProfileIcon />
-                        Mi Perfil
+                        Mis Órdenes
                       </Link>
 
                       <div className="border-t border-slate-200 dark:border-slate-700 my-2"></div>
